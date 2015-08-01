@@ -21,11 +21,15 @@
             <ion-item class="item-avatar">
                 <img src="{{userData.profileImg}}" alt="User Profile Image" width="100%">
                 <h2>Hi {{userData.firstName}}!</h2>
+                <p>{{authData}}</p>
             </ion-item>
         </ion-list>
       <ion-list>
-        <ion-item menu-close>
+        <ion-item menu-close ng-click="showLogin()">
           Login
+        </ion-item>
+        <ion-item menu-close ng-click="logOut()">
+            Log Out
         </ion-item>
         <ion-item menu-close href="#/app/search">
           Search

@@ -8,6 +8,7 @@ angular.module('bero', [
     'ionic',
     'bero.controllers',
     'bero.factories',
+    'bero.services',
     'firebase'
 ])
 
@@ -36,15 +37,15 @@ angular.module('bero', [
         templateUrl: 'templates/menu.html',
         controller: 'AppCtrl'
     })
-    .state('app.login', {
-    url: '/login',
-    views: {
-        'menuContent': {
-            templateUrl: 'templates/login.html',
-            controller: 'loginCtrl'
-        }
-    }
-  })
+  //   .state('app.login', {
+  //   url: '/login',
+  //   views: {
+  //       'menuContent': {
+  //           templateUrl: 'templates/login.html',
+  //           controller: 'loginCtrl'
+  //       }
+  //   }
+  // })
   .state('app.home', {
     url: '/home',
     views: {
@@ -81,5 +82,5 @@ angular.module('bero', [
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/login');
+  $urlRouterProvider.otherwise('/app/home');
 });
