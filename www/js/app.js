@@ -53,6 +53,12 @@ angular.module('bero', [
             templateUrl: 'templates/home.html'
         }
     }
+    // this won't let the route load without auth
+    // resolve: {
+    //     "currentAuth" : ["Auth", function(Auth){
+    //         return Auth.$requireAuth();
+    //     }]
+    // }
   })
   .state('app.browse', {
       url: '/browse',

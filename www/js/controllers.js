@@ -42,7 +42,7 @@ angular.module('bero.controllers', [])
                 $scope.loginModal.show();
             } else {
                 $scope.loginModal.hide();
-                // $state.go('app.home');
+                loginService.createUser(authData);
                 console.log("Logged in as", authData);
                 $scope.userData = {
                     firstName: authData.google.cachedUserProfile.given_name,
@@ -61,7 +61,7 @@ angular.module('bero.controllers', [])
 
 .controller('loginCtrl', function ($scope, Auth, $state, loginService) {
 
-    $scope.userLoginDeets = "I'm not logged in :(";
+    $scope.userLoginDeets = Auth;
 
     $scope.logOut = function(){
         loginService.logOut();

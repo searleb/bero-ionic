@@ -1,12 +1,11 @@
 angular.module('bero.services', [])
 
-.service('loginService', ['$state', 'Auth', function ($state, Auth, $ionicLoading) {
+.service('loginService', ['$state', 'Auth', '$firebaseArray', function ($state, Auth, $firebaseArray) {
 
     this.login = function () {
 
         Auth.$authWithOAuthRedirect("google").then(function(authData) {
             // User successfully logged in
-            $state.go('app.home');
         }).catch(function(error) {
             if (error.code === "TRANSPORT_UNAVAILABLE") {
                 Auth.$authWithOAuthPopup("google").then(function(authData) {
@@ -23,5 +22,29 @@ angular.module('bero.services', [])
 
     this.logOut = function () {
         Auth.$unauth();
+    };
+
+    this.createUser = function(authData){
+        var beroURL = "https://bero.firebaseio.com";
+        // build user details object to save to firebase
+        var userCreds = {
+            uid: authData.auth.uid,
+            firstName: authData.google.cachedUserProfile.given_name,
+            lastName: authData.google.cachedUserProfile.family_name,
+            timestamp: Date.now()
+        };
+        // check if the logged in user already has an account in firebase
+        var users = new Firebase( beroURL + "/users");
+        users.child(userCreds.uid).once('value', function(snapshot){
+            var userExists = snapshot.val();
+            //
+            if (userExists === null) {
+                // create new user in firebase
+                var url = $firebaseArray( new Firebase(beroURL + "/users/" + userCreds.uid) );
+                url.$add(userCreds).then(function(ref){
+                    // can do something here...
+                });
+            }
+        });
     };
 }]);
