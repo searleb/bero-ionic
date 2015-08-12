@@ -9,10 +9,11 @@ angular.module('bero', [
     'bero.controllers',
     'bero.factories',
     'bero.services',
-    'firebase'
+    'firebase',
+    'ngCordova',
 ])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, Auth, $state, $ionicHistory, loginService) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -25,6 +26,25 @@ angular.module('bero', [
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    Auth.$onAuth(function(authData) {
+            if (authData === null) {
+                console.log("Not logged in yet ROOT");
+                $state.go('app.login');
+                $rootScope.userData = {};
+                // $scope.loginModal.show();
+            } else {
+                // $scope.loginModal.hide();
+                loginService.createUser(authData);
+                console.log("Logged in as ROOT", authData.google.cachedUserProfile.name);
+                $ionicHistory.nextViewOptions({historyRoot: true});
+                $state.go('app.home');
+                $rootScope.userData = {
+                    firstName: authData.google.cachedUserProfile.given_name,
+                    profileImg: authData.google.profileImageURL
+                };
+            }
+        });
   });
 })
 
@@ -50,7 +70,8 @@ angular.module('bero', [
     url: '/home',
     views: {
         'menuContent' :{
-            templateUrl: 'templates/home.html'
+            templateUrl: 'templates/home.html',
+            controller: 'homeCtrl'
         }
     }
     // this won't let the route load without auth
@@ -60,11 +81,21 @@ angular.module('bero', [
     //     }]
     // }
   })
-  .state('app.browse', {
-      url: '/browse',
+  .state('app.login',{
+      url:'/login',
+      views:{
+          'menuContent' :{
+            templateUrl: 'templates/login.html',
+            controller: 'loginCtrl'
+          }
+      }
+  })
+  .state('app.add-friends', {
+      url: '/add-friends',
       views: {
         'menuContent': {
-            templateUrl: 'templates/browse.html'
+            templateUrl: 'templates/add-friends.html',
+            controller: 'friendsCtrl'
         }
       }
     })
@@ -88,5 +119,5 @@ angular.module('bero', [
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/home');
+  $urlRouterProvider.otherwise('/app/login');
 });

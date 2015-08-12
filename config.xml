@@ -17,6 +17,6 @@
   <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
-  <allow-intent href="*.firebaseio.com" />
-  <allow-intent href="auth.firebase.com" />
+  <allow-intent href="*.firebaseio.com"/>
+  <allow-intent href="auth.firebase.com"/>
 </widget>

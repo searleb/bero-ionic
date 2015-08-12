@@ -6,12 +6,13 @@ angular.module('bero.services', [])
 
         Auth.$authWithOAuthRedirect("google").then(function(authData) {
             // User successfully logged in
+            // Can't do anything here :(
         }).catch(function(error) {
             if (error.code === "TRANSPORT_UNAVAILABLE") {
                 Auth.$authWithOAuthPopup("google").then(function(authData) {
                     // User successfully logged in. We can log to the console
                     // since we’re using a popup here
-                    console.log(authData);
+                    console.log("popupAuth", authData);
                 });
             } else {
                 // Another error occurred
@@ -31,6 +32,8 @@ angular.module('bero.services', [])
             uid: authData.auth.uid,
             firstName: authData.google.cachedUserProfile.given_name,
             lastName: authData.google.cachedUserProfile.family_name,
+            displayName: authData.google.displayName,
+            profileImg: authData.google.profileImageURL,
             timestamp: Date.now()
         };
         // check if the logged in user already has an account in firebase
