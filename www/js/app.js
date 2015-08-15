@@ -28,21 +28,27 @@ angular.module('bero', [
     }
 
     Auth.$onAuth(function(authData) {
+        console.log(authData);
             if (authData === null) {
-                console.log("Not logged in yet ROOT");
+                console.log("rootScope. Not logged in yet: authData = ", authData);
+                // if we're not logged in, go to the login page
                 $state.go('app.login');
+                // and empty the user scope.
                 $rootScope.userData = {};
-                // $scope.loginModal.show();
             } else {
-                // $scope.loginModal.hide();
+                console.log("rootScope. Logged in as:", authData.google.cachedUserProfile.name);
+                // if we are logged in, call the createUser function,
                 loginService.createUser(authData);
-                console.log("Logged in as ROOT", authData.google.cachedUserProfile.name);
+                // reset the history stack (this causes the redirect to be the first page in the history
+                // so we don't get a back button in the menu)
                 $ionicHistory.nextViewOptions({historyRoot: true});
-                $state.go('app.home');
+                // set the user scope
                 $rootScope.userData = {
                     firstName: authData.google.cachedUserProfile.given_name,
                     profileImg: authData.google.profileImageURL
                 };
+                // redirect to the home page.
+                $state.go('app.home');
             }
         });
   });

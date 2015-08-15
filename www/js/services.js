@@ -3,7 +3,7 @@ angular.module('bero.services', [])
 .service('loginService', ['$state', 'Auth', '$firebaseArray', function ($state, Auth, $firebaseArray) {
 
     this.login = function () {
-
+        console.log('service.login');
         Auth.$authWithOAuthRedirect("google").then(function(authData) {
             // User successfully logged in
             // Can't do anything here :(
@@ -12,7 +12,7 @@ angular.module('bero.services', [])
                 Auth.$authWithOAuthPopup("google").then(function(authData) {
                     // User successfully logged in. We can log to the console
                     // since we’re using a popup here
-                    console.log("popupAuth", authData);
+                    console.log("popupAuth", authData.google.cachedUserProfile.given_name);
                 });
             } else {
                 // Another error occurred
@@ -22,6 +22,7 @@ angular.module('bero.services', [])
     };
 
     this.logOut = function () {
+        console.log('service.logOut');
         Auth.$unauth();
     };
 
