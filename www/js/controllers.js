@@ -38,7 +38,6 @@ angular.module('bero.controllers', [])
         loginService.logOut();
     };
     $scope.logMeIn = function(){
-        console.log('click');
         loginService.login();
     };
 
@@ -49,13 +48,25 @@ angular.module('bero.controllers', [])
 })
 
 .controller('friendsCtrl', function($scope, $firebaseObject, Auth) {
-    var ref = new Firebase("https://bero.firebaseio.com/users");
-    // all server changes are applied in realtime
-    var usersObj = $firebaseObject(ref);
+    // var usersObj = firebaseObject("users");
     // usersObj.
     // TODO find out how to loop through all users.
-    console.log( $firebaseObject( ref.child(0) ) );
+    // console.log( $firebaseObject( ref.child(0) ) );
 })
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+.controller('locationsCtrl', function($scope, $firebaseObject, $rootScope, locationsService) {
+    console.log('locationsCtrl');
+    var ref = new Firebase("https://bero.firebaseio.com/users/" + $rootScope.userData.uid);
+    var user = ref;
+    console.log("user:", user);
+    // console.log('Auth in locationsCtrl', Auth);
+    // console.log('rootScope in locationsCtrl', $rootScope);
+    // console.log('rootScope in locationsCtrl', $rootScope.userData.uid);
+    // console.log("wut", user);
+    $scope.saveLocation = function (location) {
+        locationsService.saveLocation(
+            location.formatted_address,
+            location.geometry.location
+        );
+    };
 });

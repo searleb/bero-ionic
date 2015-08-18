@@ -1,6 +1,6 @@
 angular.module('bero.services', [])
 
-.service('loginService', ['$state', 'Auth', '$firebaseArray', function ($state, Auth, $firebaseArray) {
+.service('loginService', ['$state', 'Auth', '$firebaseArray', '$firebaseObject', function ($state, Auth, $firebaseArray, $firebaseObject) {
 
     this.login = function () {
         console.log('service.login');
@@ -41,14 +41,31 @@ angular.module('bero.services', [])
         var users = new Firebase( beroURL + "/users");
         users.child(userCreds.uid).once('value', function(snapshot){
             var userExists = snapshot.val();
+            console.log('userExists', userExists);
             //
             if (userExists === null) {
                 // create new user in firebase
-                var url = $firebaseArray( new Firebase(beroURL + "/users/" + userCreds.uid) );
-                url.$add(userCreds).then(function(ref){
-                    // can do something here...
-                });
+                // array that works
+                // var urlArray = $firebaseArray( new Firebase(beroURL + "/users/" + userCreds.uid) );
+                // urlArray.$add(userCreds).then(function(ref){
+                //     // can do something here...
+                // });
+                // object maybe?
+                var newUser = new Firebase(beroURL + "/users/" + userCreds.uid);
+                console.log(userCreds);
+                newUser.set(userCreds);
+            } else {
+                $state.go('app.home');
             }
         });
     };
+}])
+.service('locationsService', ['$firebaseArray', function($firebaseArray){
+
+    this.saveLocation = function (formatted, latlng) {
+        // save the formatted address and latlng to the users firebase
+        console.log(formatted, latlng);
+
+    };
+
 }]);

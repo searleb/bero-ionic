@@ -1,0 +1,14 @@
+<ion-view view-title="Add Locations">
+  <ion-content>
+    <h1>Add Locations</h1>
+        <div class="list">
+            <label class="item item-input">
+                <ion-google-place placeholder="Enter an address, Apt# and ZIP" ng-model="location" ng-change="saveLocation(location)" />
+            </label>
+
+        </div>
+        <pre>
+            {{location}}
+        </pre>
+  </ion-content>
+</ion-view>
