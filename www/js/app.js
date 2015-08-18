@@ -14,6 +14,10 @@ angular.module('bero', [
     'ngCordova'
 ])
 
+.constant("FIREBASE_CONST",{
+    "URL": "https://bero.firebaseio.com"
+})
+
 .run(function($ionicPlatform, $rootScope, Auth, $state, $ionicHistory, loginService) {
     $ionicPlatform.ready(function() {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

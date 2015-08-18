@@ -54,19 +54,15 @@ angular.module('bero.controllers', [])
     // console.log( $firebaseObject( ref.child(0) ) );
 })
 
-.controller('locationsCtrl', function($scope, $firebaseObject, $rootScope, locationsService) {
+.controller('locationsCtrl', function($scope, locationsService) {
     console.log('locationsCtrl');
-    var ref = new Firebase("https://bero.firebaseio.com/users/" + $rootScope.userData.uid);
-    var user = ref;
-    console.log("user:", user);
-    // console.log('Auth in locationsCtrl', Auth);
-    // console.log('rootScope in locationsCtrl', $rootScope);
-    // console.log('rootScope in locationsCtrl', $rootScope.userData.uid);
-    // console.log("wut", user);
     $scope.saveLocation = function (location) {
         locationsService.saveLocation(
             location.formatted_address,
             location.geometry.location
         );
     };
+
+    $scope.savedLocations = locationsService.getLocations();
+
 });

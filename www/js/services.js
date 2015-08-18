@@ -1,6 +1,6 @@
 angular.module('bero.services', [])
 
-.service('loginService', ['$state', 'Auth', '$firebaseArray', '$firebaseObject', function ($state, Auth, $firebaseArray, $firebaseObject) {
+.service('loginService', ['$state', 'Auth', '$firebaseArray', '$firebaseObject', 'FIREBASE_CONST', function ($state, Auth, $firebaseArray, $firebaseObject, FIREBASE_CONST) {
 
     this.login = function () {
         console.log('service.login');
@@ -27,7 +27,6 @@ angular.module('bero.services', [])
     };
 
     this.createUser = function(authData){
-        var beroURL = "https://bero.firebaseio.com";
         // build user details object to save to firebase
         var userCreds = {
             uid: authData.auth.uid,
@@ -38,7 +37,7 @@ angular.module('bero.services', [])
             timestamp: Date.now()
         };
         // check if the logged in user already has an account in firebase
-        var users = new Firebase( beroURL + "/users");
+        var users = new Firebase( FIREBASE_CONST.URL + "/users");
         users.child(userCreds.uid).once('value', function(snapshot){
             var userExists = snapshot.val();
             console.log('userExists', userExists);
@@ -46,12 +45,12 @@ angular.module('bero.services', [])
             if (userExists === null) {
                 // create new user in firebase
                 // array that works
-                // var urlArray = $firebaseArray( new Firebase(beroURL + "/users/" + userCreds.uid) );
+                // var urlArray = $firebaseArray( new Firebase(FIREBASE_CONST.URL + "/users/" + userCreds.uid) );
                 // urlArray.$add(userCreds).then(function(ref){
                 //     // can do something here...
                 // });
                 // object maybe?
-                var newUser = new Firebase(beroURL + "/users/" + userCreds.uid);
+                var newUser = new Firebase(FIREBASE_CONST.URL + "/users/" + userCreds.uid + "/profile");
                 console.log(userCreds);
                 newUser.set(userCreds);
             } else {
@@ -60,12 +59,31 @@ angular.module('bero.services', [])
         });
     };
 }])
-.service('locationsService', ['$firebaseArray', function($firebaseArray){
+
+.service('locationsService', ['$firebaseArray', 'FIREBASE_CONST', 'Auth', function($firebaseArray, FIREBASE_CONST, Auth){
+    // get auth data
+    var authData = Auth.$getAuth(),
+        userUID = authData.uid;
+
 
     this.saveLocation = function (formatted, latlng) {
         // save the formatted address and latlng to the users firebase
-        console.log(formatted, latlng);
+        if (userUID) {
+            var locationArray = $firebaseArray( new Firebase(FIREBASE_CONST.URL + "/users/" + userUID + "/locations") ),
+                location = {
+                    formatted: formatted,
+                    latlng: latlng
+                };
+                console.log("locationArray",locationArray);
+            locationArray.$add(location);
+        } else {
+            alert("Sorry, something went wrong.");
+        }
+    };
 
+    this.getLocations = function () {
+        var locations = $firebaseArray( new Firebase("https://bero.firebaseio.com/users/" + userUID + "/locations") );
+        return locations;
     };
 
 }]);
