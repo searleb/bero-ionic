@@ -8,7 +8,7 @@
 
         </div>
         <ion-list>
-          <ion-item ng-repeat="location in savedLocations">
+          <ion-item ng-repeat="location in savedLocations | orderBy:'formatted'">
             {{location.formatted}}
           </ion-item>
         </ion-list>

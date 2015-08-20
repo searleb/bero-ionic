@@ -16,22 +16,6 @@ angular.module('bero.controllers', [])
 
 .controller('loginCtrl', function ($scope, Auth, $state, loginService) {
 
-    // $scope.$on('$ionicView.enter', function(e) {
-    //     Auth.$onAuth(function(authData) {
-    //         if (authData === null) {
-    //             console.log("Not logged in yet");
-    //             $scope.userData = {};
-    //         } else {
-    //             loginService.createUser(authData);
-    //             console.log("Logged in as", authData.google.cachedUserProfile.name);
-    //             $scope.userData = {
-    //                 firstName: authData.google.cachedUserProfile.given_name,
-    //                 profileImg: authData.google.profileImageURL
-    //             };
-    //         }
-    //     });
-    // });
-
     $scope.userLoginDeets = Auth;
 
     $scope.logOut = function(){
@@ -43,8 +27,66 @@ angular.module('bero.controllers', [])
 
 })
 
-.controller('homeCtrl', function($scope) {
+.controller('homeCtrl', function($scope, $cordovaGeolocation, $ionicPlatform, getCoords, Auth, $firebaseObject, FIREBASE_CONST) {
+    console.log("homeCtrl");
 
+    $ionicPlatform.ready(function() {
+        console.log("platform ready");
+        $scope.count = 0;
+        var posOptions = {timeout: 10000, enableHighAccuracy: false};
+        $cordovaGeolocation
+            .getCurrentPosition(posOptions)
+            .then(function (position) {
+                $scope.count++;
+                var lat  = position.coords.latitude;
+                var long = position.coords.longitude;
+                console.log("YOU'RE HERE:", lat, long);
+                $scope.setUserPostion(position);
+            }, function(err) {
+                console.log(err);
+                $scope.error = err;
+            });
+
+        var watchOptions = {
+            frequency : 40000,
+            timeout : 30000,
+            maximumAge: 0,
+            enableHighAccuracy: false // may cause errors if true
+        };
+
+        var watch = $cordovaGeolocation.watchPosition(watchOptions);
+        watch.then(
+            null,
+            function(err) {
+                console.log("error", err);
+                $scope.error = err;
+            },
+            function(position) {
+                $scope.count++;
+                var lat  = position.coords.latitude;
+                var long = position.coords.longitude;
+                console.log("you moved?:", lat, long);
+                $scope.setUserPostion(position);
+            });
+            // watch.clearWatch();
+            // // OR
+            // $cordovaGeolocation.clearWatch(watch)
+            // .then(function(result) {
+            //     // success
+            // }, function (error) {
+            //     // error
+            // });
+
+            $scope.setUserPostion = function (position) {
+                console.log("setUserPostion");
+                // get the position ref from getCoords factory
+                var coordsObj = getCoords();
+                // bind our ref object to $scope.userPosition then update the scope object with the new position data.
+                coordsObj.$bindTo($scope, 'userPosition').then(function () {
+                    $scope.userPosition.position = position;
+                });
+            };
+    });
 })
 
 .controller('friendsCtrl', function($scope, $firebaseObject, Auth) {
@@ -63,6 +105,7 @@ angular.module('bero.controllers', [])
         );
     };
 
+    // Set all saved locations into scope
     $scope.savedLocations = locationsService.getLocations();
 
 });

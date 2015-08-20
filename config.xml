@@ -4,10 +4,10 @@
   <description>
         An Ionic Framework and Cordova project.
     </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
+  <author email="billsearle@me.com" href="http://ionicframework.com/">
       Ionic Framework Team
     </author>
-  <content src="http://10.1.0.238:8101" original-src="index.html"/>
+  <content src="index.html"/>
   <access origin="*"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>

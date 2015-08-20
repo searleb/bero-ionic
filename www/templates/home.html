@@ -1,5 +1,14 @@
 <ion-view>
     <ion-content>
         <h1>Home</h1>
+        <p>
+            {{error | json : spacing}}
+        </p>
+        <p>
+            count: {{count}}
+        </p>
+        <pre>
+            saveCoords: {{userPosition.position | json : spacing}}
+        </pre>
     </ion-content>
 </ion-view>
